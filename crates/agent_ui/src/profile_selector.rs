@@ -1,4 +1,4 @@
-use crate::{CycleModeSelector, ManageProfiles, ToggleProfileSelector};
+use crate::{CycleFavoriteModes, ManageProfiles, ToggleProfileSelector};
 use agent_settings::{
     AgentProfile, AgentProfileId, AgentSettings, AvailableProfiles, builtin_profiles,
 };
@@ -195,7 +195,7 @@ impl Render for ProfileSelector {
                             .border_t_1()
                             .border_color(cx.theme().colors().border_variant)
                             .child(Label::new("Cycle Through Profiles"))
-                            .child(KeyBinding::for_action(&CycleModeSelector, cx)),
+                            .child(KeyBinding::for_action(&CycleFavoriteModes, cx)),
                     )
                     .into_any()
             }

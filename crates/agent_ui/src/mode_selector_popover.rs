@@ -49,12 +49,6 @@ impl ModeSelectorPopover {
         });
     }
 
-    pub fn cycle_mode(&self, window: &mut Window, cx: &mut Context<Self>) {
-        self.selector.update(cx, |selector, cx| {
-            selector.delegate.cycle_mode(window, cx);
-        });
-    }
-
     fn current_mode_name(&self) -> SharedString {
         let current_mode_id = self.session_modes.current_mode();
         self.session_modes

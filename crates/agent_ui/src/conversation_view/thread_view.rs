@@ -8323,7 +8323,7 @@ impl Render for ThreadView {
                     mode_selector.update(cx, |selector, cx| selector.toggle(window, cx));
                 }
             }))
-            .on_action(cx.listener(|this, _: &CycleModeSelector, window, cx| {
+            .on_action(cx.listener(|this, _: &CycleFavoriteModes, window, cx| {
                 if this.thread.read(cx).status() != ThreadStatus::Idle {
                     return;
                 }
@@ -8346,7 +8346,7 @@ impl Render for ThreadView {
                     });
                 } else if let Some(mode_selector) = this.mode_selector.clone() {
                     mode_selector.update(cx, |mode_selector, cx| {
-                        mode_selector.cycle_mode(window, cx);
+                        mode_selector.cycle_favorite_modes(window, cx);
                     });
                 }
             }))

@@ -99,8 +99,8 @@ actions!(
         ToggleOptionsMenu,
         /// Toggles the profile or mode selector for switching between agent profiles.
         ToggleProfileSelector,
-        /// Cycles through available session modes.
-        CycleModeSelector,
+        /// Cycles through favorited session modes.
+        CycleFavoriteModes,
         /// Cycles through favorited models in the ACP model selector.
         CycleFavoriteModels,
         /// Expands the message editor to full size.

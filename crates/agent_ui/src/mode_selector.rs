@@ -11,7 +11,8 @@ use gpui::{DismissEvent, Subscription, Task};
 use picker::{Picker, PickerDelegate};
 use settings::{Settings, SettingsStore};
 use ui::{DocumentationAside, DocumentationSide, prelude::*};
-use zed_actions::agent::{CycleFavoriteModes, ToggleModeSelector};
+
+use crate::{CycleFavoriteModes, ToggleProfileSelector};
 
 use crate::ui::HoldForDefault;
 
@@ -75,34 +76,6 @@ impl ModePickerDelegate {
             selected_description: None,
             favorites,
             _settings_subscription: settings_subscription,
-        }
-    }
-
-    pub fn cycle_mode(&mut self, window: &mut Window, cx: &mut Context<Picker<Self>>) {
-        let all_modes = self.session_modes.all_modes();
-        if all_modes.is_empty() {
-            return;
-        }
-
-        let current_id = self.session_modes.current_mode();
-        let current_index = all_modes
-            .iter()
-            .position(|m| m.id == current_id)
-            .unwrap_or(0);
-
-        let next_index = (current_index + 1) % all_modes.len();
-        let next_mode = all_modes[next_index].clone();
-
-        self.session_modes
-            .set_mode(next_mode.id.clone(), cx)
-            .detach_and_log_err(cx);
-
-        if let Some(new_index) = self.filtered_entries.iter().position(
-            |entry| matches!(entry, ModePickerEntry::Mode(mode, _) if mode.id == next_mode.id),
-        ) {
-            self.set_selected_index(new_index, window, cx);
-        } else {
-            cx.notify();
         }
     }
 
@@ -421,7 +394,7 @@ impl RenderOnce for ModeSelectorTooltip {
                     .gap_2()
                     .justify_between()
                     .child(Label::new("Change Mode"))
-                    .child(ui::KeyBinding::for_action(&ToggleModeSelector, cx)),
+                    .child(ui::KeyBinding::for_action(&ToggleProfileSelector, cx)),
             )
             .when(self.show_cycle_row, |this| {
                 this.child(
