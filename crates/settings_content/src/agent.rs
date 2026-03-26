@@ -431,6 +431,13 @@ pub enum CustomAgentServerSettings {
         ///
         /// Default: None
         default_model: Option<String>,
+        /// The favorite modes for this agent.
+        ///
+        /// These are the mode IDs as reported by the agent.
+        ///
+        /// Default: []
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        favorite_modes: Vec<String>,
         /// The favorite models for this agent.
         ///
         /// These are the model IDs as reported by the agent.
@@ -471,6 +478,13 @@ pub enum CustomAgentServerSettings {
         ///
         /// Default: None
         default_model: Option<String>,
+        /// The favorite modes for this agent.
+        ///
+        /// These are the mode IDs as reported by the agent.
+        ///
+        /// Default: []
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        favorite_modes: Vec<String>,
         /// The favorite models for this agent.
         ///
         /// These are the model IDs as reported by the agent.
@@ -511,6 +525,13 @@ pub enum CustomAgentServerSettings {
         ///
         /// Default: None
         default_model: Option<String>,
+        /// The favorite modes for this agent.
+        ///
+        /// These are the mode IDs as reported by the agent.
+        ///
+        /// Default: []
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        favorite_modes: Vec<String>,
         /// The favorite models for this agent.
         ///
         /// These are the model IDs as reported by the agent.

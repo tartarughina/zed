@@ -231,7 +231,7 @@ pub struct ThreadView {
     pub entry_view_state: Entity<EntryViewState>,
     pub title_editor: Entity<Editor>,
     pub config_options_view: Option<Entity<ConfigOptionsView>>,
-    pub mode_selector: Option<Entity<ModeSelector>>,
+    pub mode_selector: Option<Entity<ModeSelectorPopover>>,
     pub model_selector: Option<Entity<ModelSelectorPopover>>,
     pub profile_selector: Option<Entity<ProfileSelector>>,
     pub permission_dropdown_handle: PopoverMenuHandle<ContextMenu>,
@@ -322,7 +322,7 @@ impl ThreadView {
         workspace: WeakEntity<Workspace>,
         entry_view_state: Entity<EntryViewState>,
         config_options_view: Option<Entity<ConfigOptionsView>>,
-        mode_selector: Option<Entity<ModeSelector>>,
+        mode_selector: Option<Entity<ModeSelectorPopover>>,
         model_selector: Option<Entity<ModelSelectorPopover>>,
         profile_selector: Option<Entity<ProfileSelector>>,
         list_state: ListState,
@@ -653,7 +653,7 @@ impl ThreadView {
             Some(thread.read(cx).profile().0.clone())
         } else {
             let mode_selector = self.mode_selector.as_ref()?;
-            Some(mode_selector.read(cx).mode().0)
+            Some(mode_selector.read(cx).current_mode().0)
         }
     }
 
@@ -8320,7 +8320,7 @@ impl Render for ThreadView {
                 if let Some(profile_selector) = this.profile_selector.clone() {
                     profile_selector.read(cx).menu_handle().toggle(window, cx);
                 } else if let Some(mode_selector) = this.mode_selector.clone() {
-                    mode_selector.read(cx).menu_handle().toggle(window, cx);
+                    mode_selector.update(cx, |selector, cx| selector.toggle(window, cx));
                 }
             }))
             .on_action(cx.listener(|this, _: &CycleModeSelector, window, cx| {
@@ -8392,6 +8392,25 @@ impl Render for ThreadView {
                 if let Some(model_selector) = this.model_selector.clone() {
                     model_selector.update(cx, |model_selector, cx| {
                         model_selector.cycle_favorite_models(window, cx);
+                    });
+                }
+            }))
+            .on_action(cx.listener(|this, _: &CycleFavoriteModes, window, cx| {
+                if this.thread.read(cx).status() != ThreadStatus::Idle {
+                    return;
+                }
+                if let Some(config_options_view) = this.config_options_view.clone() {
+                    let handled = config_options_view.update(cx, |view, cx| {
+                        view.cycle_category_option(acp::SessionConfigOptionCategory::Mode, true, cx)
+                    });
+                    if handled {
+                        return;
+                    }
+                }
+
+                if let Some(mode_selector) = this.mode_selector.clone() {
+                    mode_selector.update(cx, |mode_selector, cx| {
+                        mode_selector.cycle_favorite_modes(window, cx);
                     });
                 }
             }))

@@ -68,7 +68,7 @@ use zed_actions::assistant::OpenRulesLibrary;
 use super::config_options::ConfigOptionsView;
 use super::entry_view_state::EntryViewState;
 use super::thread_history::ThreadHistory;
-use crate::ModeSelector;
+use crate::ModeSelectorPopover;
 use crate::ModelSelectorPopover;
 use crate::agent_connection_store::{
     AgentConnectedState, AgentConnectionEntryEvent, AgentConnectionStore,
@@ -81,9 +81,9 @@ use crate::thread_metadata_store::SidebarThreadMetadataStore;
 use crate::ui::{AgentNotification, AgentNotificationEvent};
 use crate::{
     Agent, AgentDiffPane, AgentInitialContent, AgentPanel, AllowAlways, AllowOnce,
-    AuthorizeToolCall, ClearMessageQueue, CycleFavoriteModels, CycleModeSelector,
-    CycleThinkingEffort, EditFirstQueuedMessage, ExpandMessageEditor, Follow, KeepAll, NewThread,
-    OpenAddContextMenu, OpenAgentDiff, OpenHistory, RejectAll, RejectOnce,
+    AuthorizeToolCall, ClearMessageQueue, CycleFavoriteModels, CycleFavoriteModes,
+    CycleModeSelector, CycleThinkingEffort, EditFirstQueuedMessage, ExpandMessageEditor, Follow,
+    KeepAll, NewThread, OpenAddContextMenu, OpenAgentDiff, OpenHistory, RejectAll, RejectOnce,
     RemoveFirstQueuedMessage, SendImmediately, SendNextQueuedMessage, ToggleFastMode,
     ToggleProfileSelector, ToggleThinkingEffortMenu, ToggleThinkingMode, UndoLastReject,
 };
@@ -856,7 +856,16 @@ impl ConversationView {
                 .session_modes(&session_id, cx)
                 .map(|session_modes| {
                     let fs = self.project.read(cx).fs().clone();
-                    cx.new(|_cx| ModeSelector::new(session_modes, self.agent.clone(), fs))
+                    cx.new(|cx| {
+                        ModeSelectorPopover::new(
+                            session_modes,
+                            self.agent.clone(),
+                            fs,
+                            PopoverMenuHandle::default(),
+                            window,
+                            cx,
+                        )
+                    })
                 });
         }
 

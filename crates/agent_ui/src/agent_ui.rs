@@ -20,6 +20,7 @@ mod language_model_selector;
 mod mention_set;
 mod message_editor;
 mod mode_selector;
+mod mode_selector_popover;
 mod model_selector;
 mod model_selector_popover;
 mod profile_selector;
@@ -72,7 +73,8 @@ pub use crate::inline_assistant::InlineAssistant;
 pub use agent_diff::{AgentDiffPane, AgentDiffToolbar};
 pub(crate) use conversation_view::ConversationView;
 pub use external_source_prompt::ExternalSourcePrompt;
-pub(crate) use mode_selector::ModeSelector;
+pub(crate) use mode_selector::{ModeSelector, ModeSelectorTooltip};
+pub(crate) use mode_selector_popover::ModeSelectorPopover;
 pub(crate) use model_selector::ModelSelector;
 pub(crate) use model_selector_popover::ModelSelectorPopover;
 pub use text_thread_editor::{AgentPanelDelegate, TextThreadEditor};
@@ -99,6 +101,8 @@ actions!(
         ToggleProfileSelector,
         /// Cycles through available session modes.
         CycleModeSelector,
+        /// Cycles through favorited modes in the ACP mode selector.
+        CycleFavoriteModes,
         /// Cycles through favorited models in the ACP model selector.
         CycleFavoriteModels,
         /// Expands the message editor to full size.

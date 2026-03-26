@@ -76,6 +76,10 @@ pub trait AgentServer: Send {
         HashSet::default()
     }
 
+    fn favorite_mode_ids(&self, _cx: &mut App) -> HashSet<agent_client_protocol::SessionModeId> {
+        HashSet::default()
+    }
+
     fn default_config_option(&self, _config_id: &str, _cx: &App) -> Option<String> {
         None
     }
@@ -110,6 +114,15 @@ pub trait AgentServer: Send {
     fn toggle_favorite_model(
         &self,
         _model_id: agent_client_protocol::ModelId,
+        _should_be_favorite: bool,
+        _fs: Arc<dyn Fs>,
+        _cx: &App,
+    ) {
+    }
+
+    fn toggle_favorite_mode(
+        &self,
+        _mode_id: agent_client_protocol::SessionModeId,
         _should_be_favorite: bool,
         _fs: Arc<dyn Fs>,
         _cx: &App,

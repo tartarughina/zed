@@ -236,6 +236,59 @@ impl AgentServer for CustomAgentServer {
         });
     }
 
+    fn favorite_mode_ids(&self, cx: &mut App) -> HashSet<acp::SessionModeId> {
+        let settings = cx.read_global(|settings: &SettingsStore, _| {
+            settings
+                .get::<AllAgentServersSettings>(None)
+                .get(self.agent_id().as_ref())
+                .cloned()
+        });
+
+        settings
+            .as_ref()
+            .map(|s| {
+                s.favorite_modes()
+                    .iter()
+                    .map(|id| acp::SessionModeId::new(id.clone()))
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
+
+    fn toggle_favorite_mode(
+        &self,
+        mode_id: acp::SessionModeId,
+        should_be_favorite: bool,
+        fs: Arc<dyn Fs>,
+        cx: &App,
+    ) {
+        let agent_id = self.agent_id();
+        update_settings_file(fs, cx, move |settings, cx| {
+            let settings = settings
+                .agent_servers
+                .get_or_insert_default()
+                .entry(agent_id.0.to_string())
+                .or_insert_with(|| default_settings_for_agent(agent_id, cx));
+
+            let favorite_modes = match settings {
+                settings::CustomAgentServerSettings::Custom { favorite_modes, .. }
+                | settings::CustomAgentServerSettings::Extension { favorite_modes, .. }
+                | settings::CustomAgentServerSettings::Registry { favorite_modes, .. } => {
+                    favorite_modes
+                }
+            };
+
+            let mode_id_str = mode_id.to_string();
+            if should_be_favorite {
+                if !favorite_modes.contains(&mode_id_str) {
+                    favorite_modes.push(mode_id_str);
+                }
+            } else {
+                favorite_modes.retain(|id| id != &mode_id_str);
+            }
+        });
+    }
+
     fn default_config_option(&self, config_id: &str, cx: &App) -> Option<String> {
         let settings = cx.read_global(|settings: &SettingsStore, _| {
             settings
@@ -432,6 +485,7 @@ fn default_settings_for_agent(
             default_model: None,
             default_mode: None,
             env: Default::default(),
+            favorite_modes: Vec::new(),
             favorite_models: Vec::new(),
             default_config_options: Default::default(),
             favorite_config_option_values: Default::default(),
@@ -441,6 +495,7 @@ fn default_settings_for_agent(
             default_model: None,
             default_mode: None,
             env: Default::default(),
+            favorite_modes: Vec::new(),
             favorite_models: Vec::new(),
             default_config_options: Default::default(),
             favorite_config_option_values: Default::default(),
