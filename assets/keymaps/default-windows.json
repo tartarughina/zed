@@ -250,7 +250,8 @@
       "shift-alt-l": "agent::OpenRulesLibrary",
       "shift-alt-p": "agent::ManageProfiles",
       "ctrl-i": "agent::ToggleProfileSelector",
-      "shift-tab": "agent::CycleModeSelector",
+      "ctrl-i": "agent::ToggleModeSelector",
+      "shift-tab": "agent::CycleFavoriteModes",
       "alt-tab": "agent::CycleFavoriteModels",
       // `alt-l` is provided as an alternative to `alt-tab` as the latter breaks on Windows under the `AgentPanel` context
       "alt-l": "agent::CycleFavoriteModels",
@@ -329,7 +330,8 @@
       "ctrl-alt-backspace": "agent::ClearMessageQueue",
       "ctrl-shift-v": "agent::PasteRaw",
       "ctrl-i": "agent::ToggleProfileSelector",
-      "shift-tab": "agent::CycleModeSelector",
+      "ctrl-i": "agent::ToggleModeSelector",
+      "shift-tab": "agent::CycleFavoriteModes",
       // `alt-l` is provided as an alternative to `alt-tab` as the latter breaks on Windows under the `AcpThread > Editor` context
       "alt-tab": "agent::CycleFavoriteModels",
       "alt-l": "agent::CycleFavoriteModels",

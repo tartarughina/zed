@@ -76,7 +76,13 @@ impl Render for ModeSelectorPopover {
             (Color::Muted, IconName::ChevronDown)
         };
 
-        let tooltip = Tooltip::element(move |_, _cx| ModeSelectorTooltip.into_any_element());
+        let show_cycle_row = self.selector.read(cx).delegate.favorites.len() > 1;
+
+        let tooltip = Tooltip::element(move |_, _cx| {
+            ModeSelectorTooltip::new()
+                .show_cycle_row(show_cycle_row)
+                .into_any_element()
+        });
 
         PickerPopoverMenu::new(
             self.selector.clone(),

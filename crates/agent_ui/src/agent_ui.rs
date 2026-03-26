@@ -101,8 +101,6 @@ actions!(
         ToggleProfileSelector,
         /// Cycles through available session modes.
         CycleModeSelector,
-        /// Cycles through favorited modes in the ACP mode selector.
-        CycleFavoriteModes,
         /// Cycles through favorited models in the ACP model selector.
         CycleFavoriteModels,
         /// Expands the message editor to full size.

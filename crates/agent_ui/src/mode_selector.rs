@@ -11,8 +11,9 @@ use gpui::{DismissEvent, Subscription, Task};
 use picker::{Picker, PickerDelegate};
 use settings::{Settings, SettingsStore};
 use ui::{DocumentationAside, DocumentationSide, prelude::*};
+use zed_actions::agent::{CycleFavoriteModes, ToggleModeSelector};
 
-use crate::{CycleFavoriteModes, ToggleProfileSelector, ui::HoldForDefault};
+use crate::ui::HoldForDefault;
 
 pub type ModeSelector = Picker<ModePickerDelegate>;
 
@@ -42,7 +43,7 @@ pub struct ModePickerDelegate {
     filtered_entries: Vec<ModePickerEntry>,
     selected_index: usize,
     selected_description: Option<(usize, SharedString, bool)>,
-    favorites: HashSet<acp::SessionModeId>,
+    pub favorites: HashSet<acp::SessionModeId>,
     _settings_subscription: Subscription,
 }
 
@@ -394,7 +395,22 @@ impl PickerDelegate for ModePickerDelegate {
 }
 
 #[derive(IntoElement)]
-pub struct ModeSelectorTooltip;
+pub struct ModeSelectorTooltip {
+    show_cycle_row: bool,
+}
+
+impl ModeSelectorTooltip {
+    pub fn new() -> Self {
+        Self {
+            show_cycle_row: true,
+        }
+    }
+
+    pub fn show_cycle_row(mut self, show: bool) -> Self {
+        self.show_cycle_row = show;
+        self
+    }
+}
 
 impl RenderOnce for ModeSelectorTooltip {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
@@ -405,17 +421,19 @@ impl RenderOnce for ModeSelectorTooltip {
                     .gap_2()
                     .justify_between()
                     .child(Label::new("Change Mode"))
-                    .child(ui::KeyBinding::for_action(&ToggleProfileSelector, cx)),
+                    .child(ui::KeyBinding::for_action(&ToggleModeSelector, cx)),
             )
-            .child(
-                h_flex()
-                    .pt_1()
-                    .gap_2()
-                    .border_t_1()
-                    .border_color(cx.theme().colors().border_variant)
-                    .justify_between()
-                    .child(Label::new("Cycle Favorited Modes"))
-                    .child(ui::KeyBinding::for_action(&CycleFavoriteModes, cx)),
-            )
+            .when(self.show_cycle_row, |this| {
+                this.child(
+                    h_flex()
+                        .pt_1()
+                        .gap_2()
+                        .border_t_1()
+                        .border_color(cx.theme().colors().border_variant)
+                        .justify_between()
+                        .child(Label::new("Cycle Favorited Modes"))
+                        .child(ui::KeyBinding::for_action(&CycleFavoriteModes, cx)),
+                )
+            })
     }
 }
