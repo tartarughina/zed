@@ -1098,10 +1098,7 @@ impl ExtensionImports for WasmState {
                     futures::pin_mut!(decompressed_bytes);
                     self.host
                         .fs
-                        .extract_tar_file(
-                            &destination_path,
-                            Archive::new(decompressed_bytes),
-                        )
+                        .extract_tar_file(&destination_path, Archive::new(decompressed_bytes))
                         .await?;
                 }
                 DownloadedFileType::Zip => {
